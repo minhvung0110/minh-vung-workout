@@ -4,7 +4,7 @@ const SetSchema = new mongoose.Schema({
     setNumber: Number,
     weight: Number,
     reps: Number,
-    rpe: { type: Number, min: 1, max: 10 },
+    rpe: Number,
     restTime: Number,
     oneRepMax: Number
 });
