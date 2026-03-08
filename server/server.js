@@ -17,7 +17,7 @@ app.use('/api/workouts', require('./routes/workouts'));
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
-    app.get('*', (status, res) => {
+    app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
     });
 }
