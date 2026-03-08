@@ -27,8 +27,12 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27010/gym-tracker';
 
 mongoose.connect(MONGO_URI)
-    .then(() => {
-        console.log('MongoDB connected');
-        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-    })
-    .catch(err => console.log(err));
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+        // In production, we might want to exit if DB fails, but Render needs the port to open
+    });
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+});
