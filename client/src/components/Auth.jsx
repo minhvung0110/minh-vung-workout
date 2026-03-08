@@ -13,7 +13,7 @@ const Auth = () => {
             const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
             const res = await axios.post(endpoint, formData);
             localStorage.setItem('token', res.data.token);
-            navigate('/dashboard');
+            navigate('/schedule');
         } catch (err) {
             alert(err.response?.data?.msg || 'Error occurred');
         }

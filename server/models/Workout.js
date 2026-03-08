@@ -5,21 +5,23 @@ const SetSchema = new mongoose.Schema({
     weight: Number,
     reps: Number,
     rpe: { type: Number, min: 1, max: 10 },
-    restTime: Number, // saved in seconds
+    restTime: Number,
     oneRepMax: Number
 });
 
 const WorkoutExerciseSchema = new mongoose.Schema({
-    exerciseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' },
+    exerciseId: String,
     name: String,
+    type: { type: String, enum: ['Compound', 'Isolation'], default: 'Compound' },
     sets: [SetSchema]
 });
 
 const WorkoutSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    dayOfWeek: { type: String },
     startTime: { type: Date, default: Date.now },
     endTime: Date,
-    duration: Number, // in minutes
+    duration: Number,
     exercises: [WorkoutExerciseSchema],
     totalVolume: { type: Number, default: 0 }
 });

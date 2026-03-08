@@ -43,7 +43,8 @@ router.post('/', auth, async (req, res) => {
         const workout = await newWorkout.save();
         res.json(workout);
     } catch (err) {
-        res.status(500).send('Server error');
+        console.error('Save workout error:', err.message, err.stack);
+        res.status(500).json({ msg: 'Server error: ' + err.message });
     }
 });
 

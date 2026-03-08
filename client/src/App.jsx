@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Auth from './components/Auth';
 import ActiveWorkout from './components/ActiveWorkout';
 import Dashboard from './components/Dashboard';
+import WorkoutSchedule from './components/WorkoutSchedule';
 import './index.css';
 
 // Protected Route Component
@@ -17,6 +18,11 @@ function App() {
             <div className="App">
                 <Routes>
                     <Route path="/auth" element={<Auth />} />
+                    <Route path="/schedule" element={
+                        <PrivateRoute>
+                            <WorkoutSchedule />
+                        </PrivateRoute>
+                    } />
                     <Route path="/dashboard" element={
                         <PrivateRoute>
                             <Dashboard />
@@ -27,7 +33,7 @@ function App() {
                             <ActiveWorkout />
                         </PrivateRoute>
                     } />
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route path="/" element={<Navigate to="/schedule" />} />
                 </Routes>
             </div>
         </Router>
