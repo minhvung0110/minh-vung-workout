@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ msg: 'Username and password are required' });
+        }
         let user = await User.findOne({ username });
         if (user) return res.status(400).json({ msg: 'User already exists' });
 
@@ -18,7 +21,8 @@ router.post('/register', async (req, res) => {
             res.json({ token });
         });
     } catch (err) {
-        res.status(500).send('Server error');
+        console.error('Register error:', err.message, err.stack);
+        res.status(500).json({ msg: 'Server error: ' + err.message });
     }
 });
 
@@ -37,7 +41,8 @@ router.post('/login', async (req, res) => {
             res.json({ token });
         });
     } catch (err) {
-        res.status(500).send('Server error');
+        console.error('Login error:', err.message, err.stack);
+        res.status(500).json({ msg: 'Server error: ' + err.message });
     }
 });
 

@@ -10,6 +10,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health check
+app.get('/api/health', (req, res) => {
+    const dbState = mongoose.connection.readyState;
+    const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+    res.json({
+        server: 'running',
+        database: states[dbState] || 'unknown',
+        mongoUri: process.env.MONGO_URI ? 'SET' : 'NOT SET',
+        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT SET',
+        nodeEnv: process.env.NODE_ENV || 'not set'
+    });
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/workouts', require('./routes/workouts'));
