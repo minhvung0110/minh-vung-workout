@@ -31,7 +31,7 @@ const Dashboard = () => {
         const fetchWorkouts = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get('http://localhost:5000/api/workouts', {
+                const res = await axios.get('/api/workouts', {
                     headers: { 'x-auth-token': token }
                 });
                 setWorkouts(res.data);

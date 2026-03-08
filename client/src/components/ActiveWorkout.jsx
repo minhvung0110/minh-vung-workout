@@ -54,7 +54,7 @@ const ActiveWorkout = () => {
     const saveWorkout = async () => {
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:5000/api/workouts', {
+            await axios.post('/api/workouts', {
                 ...workout,
                 endTime: new Date()
             }, { headers: { 'x-auth-token': token } });
