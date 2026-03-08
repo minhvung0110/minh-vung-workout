@@ -23,7 +23,7 @@ const Auth = () => {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             <div className="glass-card" style={{ width: '100%', maxWidth: '400px' }}>
                 <h1 style={{ marginBottom: '24px', textAlign: 'center', color: 'var(--accent-color)' }}>
-                    {isLogin ? 'Welcome Back' : 'Join the Lab'}
+                    Gym Lab Login
                 </h1>
                 <form onSubmit={handleSubmit}>
                     <input
@@ -41,17 +41,11 @@ const Auth = () => {
                         required
                     />
                     <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '10px' }}>
-                        {isLogin ? 'Login' : 'Register'}
+                        Login
                     </button>
                 </form>
-                <p style={{ marginTop: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                    {isLogin ? "Don't have an account?" : "Already Have an account?"}
-                    <span
-                        onClick={() => setIsLogin(!isLogin)}
-                        style={{ color: 'var(--accent-color)', cursor: 'pointer', marginLeft: '8px' }}
-                    >
-                        {isLogin ? 'Sign Up' : 'Log In'}
-                    </span>
+                <p style={{ marginTop: '20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                    Private instance for Minh Vững
                 </p>
             </div>
         </div >

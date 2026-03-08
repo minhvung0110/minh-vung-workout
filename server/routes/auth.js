@@ -4,6 +4,9 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res) => {
+    // Disable public registration
+    return res.status(403).json({ msg: 'Registration is currently closed for this instance.' });
+
     try {
         const { username, password } = req.body;
         if (!username || !password) {
