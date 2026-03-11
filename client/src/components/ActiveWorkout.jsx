@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import SmartTimer from './SmartTimer';
 import { Save, Plus, Trash2, TrendingUp, ArrowLeft, X, Edit2, Check, Activity, TrendingDown } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
