@@ -4,41 +4,41 @@ import { Dumbbell, Plus, X, Calendar, ChevronRight, LogOut } from 'lucide-react'
 
 const DEFAULT_SCHEDULE = {
     'Thứ 2': [
-        { name: 'Bench Press', type: 'Compound' },
-        { name: 'Close-Grip Lat Pulldown', type: 'Compound' },
-        { name: 'Dumbbell Shoulder Press', type: 'Compound' },
-        { name: 'Dumbbell Upright Row', type: 'Isolation' },
-        { name: 'Triceps Pushdown', type: 'Isolation' },
+        { name: 'Bench Press', type: 'Compound', restTime: 180 },
+        { name: 'Close-Grip Lat Pulldown', type: 'Compound', restTime: 180 },
+        { name: 'Dumbbell Shoulder Press', type: 'Compound', restTime: 120 },
+        { name: 'Dumbbell Upright Row', type: 'Isolation', restTime: 90 },
+        { name: 'Triceps Pushdown', type: 'Isolation', restTime: 60 },
     ],
     'Thứ 3': [
-        { name: 'Squat', type: 'Compound' },
-        { name: 'Dumbbell Romanian Deadlift', type: 'Compound' },
-        { name: 'Dumbbell Split Squat', type: 'Compound' },
-        { name: 'Leg Extension', type: 'Isolation' },
+        { name: 'Squat', type: 'Compound', restTime: 240 },
+        { name: 'Dumbbell Romanian Deadlift', type: 'Compound', restTime: 180 },
+        { name: 'Dumbbell Split Squat', type: 'Compound', restTime: 120 },
+        { name: 'Leg Extension', type: 'Isolation', restTime: 90 },
     ],
     'Thứ 4': [
-        { name: 'Chest-Supported T-Bar Row', type: 'Compound' },
-        { name: 'Lat Pulldown', type: 'Compound' },
-        { name: 'Incline Dumbbell Bench Press', type: 'Compound' },
-        { name: 'Chest-Supported Dumbbell Row', type: 'Compound' },
-        { name: 'EZ-Bar Curl', type: 'Isolation' },
+        { name: 'Chest-Supported T-Bar Row', type: 'Compound', restTime: 180 },
+        { name: 'Lat Pulldown', type: 'Compound', restTime: 180 },
+        { name: 'Incline Dumbbell Bench Press', type: 'Compound', restTime: 180 },
+        { name: 'Chest-Supported Dumbbell Row', type: 'Compound', restTime: 120 },
+        { name: 'EZ-Bar Curl', type: 'Isolation', restTime: 90 },
     ],
     'Thứ 5': [
-        { name: 'Cardio', type: 'Compound' },
+        { name: 'Cardio', type: 'Compound', restTime: 0 },
     ],
     'Thứ 6': [
-        { name: 'Overhead Press', type: 'Compound' },
-        { name: 'Dumbbell Bench Press', type: 'Compound' },
-        { name: 'Close-Grip Underhand Lat Pulldown', type: 'Compound' },
-        { name: 'Triceps Rope Pushdown', type: 'Isolation' },
-        { name: 'Dumbbell Bicep Curl', type: 'Isolation' },
+        { name: 'Overhead Press', type: 'Compound', restTime: 180 },
+        { name: 'Dumbbell Bench Press', type: 'Compound', restTime: 180 },
+        { name: 'Close-Grip Underhand Lat Pulldown', type: 'Compound', restTime: 180 },
+        { name: 'Triceps Rope Pushdown', type: 'Isolation', restTime: 60 },
+        { name: 'Dumbbell Bicep Curl', type: 'Isolation', restTime: 60 },
     ],
     'Thứ 7': [
-        { name: 'Deadlift', type: 'Compound' },
-        { name: 'Leg Press', type: 'Compound' },
-        { name: 'Hip Thrust', type: 'Compound' },
-        { name: 'Lying Leg Curl', type: 'Isolation' },
-        { name: 'Calf Raise', type: 'Isolation' },
+        { name: 'Deadlift', type: 'Compound', restTime: 300 },
+        { name: 'Leg Press', type: 'Compound', restTime: 180 },
+        { name: 'Hip Thrust', type: 'Compound', restTime: 180 },
+        { name: 'Lying Leg Curl', type: 'Isolation', restTime: 90 },
+        { name: 'Calf Raise', type: 'Isolation', restTime: 60 },
     ],
     'CN': [],
 };
@@ -61,7 +61,7 @@ const WorkoutSchedule = () => {
     const [selectedDay, setSelectedDay] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [addingToDay, setAddingToDay] = useState(null);
-    const [newExercise, setNewExercise] = useState({ name: '', type: 'Compound' });
+    const [newExercise, setNewExercise] = useState({ name: '', type: 'Compound', restTime: 90 });
 
     // Load custom schedule from localStorage
     useEffect(() => {
@@ -89,14 +89,18 @@ const WorkoutSchedule = () => {
 
     const openAddModal = (day) => {
         setAddingToDay(day);
-        setNewExercise({ name: '', type: 'Compound' });
+        setNewExercise({ name: '', type: 'Compound', restTime: 90 });
         setShowAddModal(true);
     };
 
     const addExercise = () => {
         if (!newExercise.name.trim()) return;
         const updated = { ...schedule };
-        updated[addingToDay] = [...updated[addingToDay], { name: newExercise.name.trim(), type: newExercise.type }];
+        updated[addingToDay] = [...updated[addingToDay], {
+            name: newExercise.name.trim(),
+            type: newExercise.type,
+            restTime: Number(newExercise.restTime) || 0
+        }];
         saveSchedule(updated);
         setShowAddModal(false);
     };
@@ -185,6 +189,7 @@ const WorkoutSchedule = () => {
                                                         <span className={`type-badge ${ex.type === 'Compound' ? 'compound' : 'isolation'}`}>
                                                             {ex.type}
                                                         </span>
+                                                        {ex.restTime > 0 && <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>⏱️ {ex.restTime}s</span>}
                                                     </div>
                                                     <button
                                                         className="btn-icon"
@@ -235,6 +240,16 @@ const WorkoutSchedule = () => {
                             onChange={(e) => setNewExercise({ ...newExercise, name: e.target.value })}
                             autoFocus
                         />
+                        <div style={{ marginBottom: '15px' }}>
+                            <label className="input-label">Thời gian nghỉ (giây)</label>
+                            <input
+                                type="number"
+                                placeholder="90"
+                                value={newExercise.restTime}
+                                onChange={(e) => setNewExercise({ ...newExercise, restTime: e.target.value })}
+                                style={{ marginBottom: 0 }}
+                            />
+                        </div>
                         <div className="type-selector">
                             <button
                                 className={`type-option ${newExercise.type === 'Compound' ? 'active' : ''}`}

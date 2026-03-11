@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const SmartTimer = ({ type, onFinish }) => {
+const SmartTimer = ({ type, onFinish, targetSeconds }) => {
     const [seconds, setSeconds] = useState(0);
     const [isActive, setIsActive] = useState(true);
     const timerRef = useRef(null);
 
-    // Default targets based on exercise type
-    const target = type === 'Compound' ? 180 : 90; // 3 mins vs 1.5 mins
+    // Default targets based on exercise type if targetSeconds not provided
+    const target = targetSeconds || (type === 'Compound' ? 180 : 90);
 
     useEffect(() => {
         if (isActive) {
