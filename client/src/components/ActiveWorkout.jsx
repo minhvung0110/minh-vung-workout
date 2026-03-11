@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SmartTimer from './SmartTimer';
-import { Save, Plus, Trash2, TrendingUp, ArrowLeft, X } from 'lucide-react';
+import { Save, Plus, Trash2, TrendingUp, ArrowLeft, X, Edit2, Check } from 'lucide-react';
 
 const ActiveWorkout = () => {
     const location = useLocation();
@@ -21,6 +21,8 @@ const ActiveWorkout = () => {
     const [newExName, setNewExName] = useState('');
     const [newExType, setNewExType] = useState('Compound');
     const [lastSessionData, setLastSessionData] = useState({});
+    const [editingExIdx, setEditingExIdx] = useState(null);
+    const [tempExName, setTempExName] = useState('');
 
     // Initialize exercises from schedule
     useEffect(() => {
@@ -47,8 +49,9 @@ const ActiveWorkout = () => {
                     const lastDataMap = {};
                     res.data.forEach(w => {
                         w.exercises.forEach(ex => {
-                            if (!lastDataMap[ex.name]) {
-                                lastDataMap[ex.name] = ex;
+                            const normalizedName = ex.name.trim();
+                            if (!lastDataMap[normalizedName]) {
+                                lastDataMap[normalizedName] = ex;
                             }
                         });
                     });
@@ -140,7 +143,20 @@ const ActiveWorkout = () => {
     };
 
     const getLastData = (exerciseName) => {
-        return lastSessionData[exerciseName];
+        if (!exerciseName) return null;
+        return lastSessionData[exerciseName.trim()];
+    };
+
+    const startEditingName = (idx, name) => {
+        setEditingExIdx(idx);
+        setTempExName(name);
+    };
+
+    const saveExerciseName = (idx) => {
+        const updatedEx = [...workout.exercises];
+        updatedEx[idx].name = tempExName.trim();
+        setWorkout({ ...workout, exercises: updatedEx });
+        setEditingExIdx(null);
     };
 
     return (
@@ -164,7 +180,7 @@ const ActiveWorkout = () => {
                 </button>
             </header>
 
-            {showTimer && <SmartTimer type={timerType} onFinish={handleTimerFinish} />}
+            {/* {showTimer && <SmartTimer type={timerType} onFinish={handleTimerFinish} />} */}
 
             {/* Exercise List */}
             {workout.exercises.map((ex, exIdx) => {
@@ -172,13 +188,36 @@ const ActiveWorkout = () => {
                 return (
                     <div key={exIdx} className="glass-card exercise-card" style={{ marginBottom: '20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                            <div>
-                                <h2 style={{ fontSize: '1.1rem' }}>
-                                    {ex.name}
-                                    <span className={`type-badge ${ex.type === 'Compound' ? 'compound' : 'isolation'}`} style={{ marginLeft: '10px' }}>
-                                        {ex.type}
-                                    </span>
-                                </h2>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}>
+                                {editingExIdx === exIdx ? (
+                                    <div style={{ display: 'flex', gap: '5px', flex: 1 }}>
+                                        <input
+                                            type="text"
+                                            value={tempExName}
+                                            onChange={(e) => setTempExName(e.target.value)}
+                                            style={{ margin: 0, padding: '5px 10px', fontSize: '1rem' }}
+                                            autoFocus
+                                        />
+                                        <button className="btn-icon" onClick={() => saveExerciseName(exIdx)} style={{ color: 'var(--success)' }}>
+                                            <Check size={18} />
+                                        </button>
+                                        <button className="btn-icon" onClick={() => setEditingExIdx(null)}>
+                                            <X size={18} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <h2 style={{ fontSize: '1.1rem', margin: 0 }}>
+                                            {ex.name}
+                                            <span className={`type-badge ${ex.type === 'Compound' ? 'compound' : 'isolation'}`} style={{ marginLeft: '10px' }}>
+                                                {ex.type}
+                                            </span>
+                                        </h2>
+                                        <button className="btn-icon-sm" onClick={() => startEditingName(exIdx, ex.name)} title="Sửa tên">
+                                            <Edit2 size={14} />
+                                        </button>
+                                    </>
+                                )}
                             </div>
                             <button className="btn-icon btn-icon-danger" onClick={() => removeExercise(exIdx)} title="Xóa bài tập">
                                 <Trash2 size={16} />
@@ -192,7 +231,7 @@ const ActiveWorkout = () => {
                                 <span>Lần trước: </span>
                                 {lastData.sets && lastData.sets.map((s, i) => (
                                     <span key={i} className="last-set-chip">
-                                        S{s.setNumber}: {s.weight}kg × {s.reps}
+                                        S{s.setNumber}: {s.weight}kg × {s.reps} {s.restTime > 0 && <small style={{ opacity: 0.7 }}>({s.restTime}s)</small>}
                                     </span>
                                 ))}
                             </div>
@@ -231,6 +270,12 @@ const ActiveWorkout = () => {
                                 ))}
                             </tbody>
                         </table>
+
+                        {showTimer && currentTimerSetInfo?.exIndex === exIdx && (
+                            <div style={{ marginTop: '20px' }}>
+                                <SmartTimer type={timerType} onFinish={handleTimerFinish} />
+                            </div>
+                        )}
 
                         <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                             Est. 1RM: <strong>{ex.sets[0].weight > 0 && ex.sets[0].reps > 0 ? (ex.sets[0].weight * (1 + ex.sets[0].reps / 30)).toFixed(1) : '0.0'}kg</strong>
